@@ -1,0 +1,18 @@
+{
+    "name": "formapro/xmlseclibs",
+    "description": "A PHP library for XML Security",
+    "authors": [
+        { "name": "Rob Richards" }
+    ],
+    "license": "BSD-3-Clause",
+    "type": "library",
+    "keywords": ["xml", "xmlsec", "security", "signing", "signature", "x.509", "certificate"],
+    "homepage": "http://code.google.com/p/xmlseclibs/",
+    "autoload": {
+        "files": ["xmlseclibs.php"]
+    },
+    "suggest": {
+        "ext/openssl": "OpenSSL extension",
+        "ext/mcrypt": "MCrypt extension"
+    }
+}
