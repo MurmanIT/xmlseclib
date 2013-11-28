@@ -14,11 +14,8 @@ class XMLSecurityDSig
     const EXC_C14N = 'http://www.w3.org/2001/10/xml-exc-c14n#';
     const EXC_C14N_COMMENTS = 'http://www.w3.org/2001/10/xml-exc-c14n#WithComments';
 
-    const template = '<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
-  <ds:SignedInfo>
-    <ds:SignatureMethod />
-  </ds:SignedInfo>
-</ds:Signature>';
+    const template =
+        '<Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><SignatureMethod/></SignedInfo></Signature>';
 
     public $sigNode = NULL;
     public $idKeys = array();
@@ -26,16 +23,17 @@ class XMLSecurityDSig
     private $signedInfo = NULL;
     private $xPathCtx = NULL;
     private $canonicalMethod = NULL;
-    private $prefix = 'ds';
+    private $prefix = 'ds:';
     private $searchpfx = 'secdsig';
 
     /* This variable contains an associative array of validated nodes. */
     private $validatedNodes = NULL;
 
-    public function __construct() {
+    public function __construct($prefix = 'ds:') {
         $sigdoc = new DOMDocument();
         $sigdoc->loadXML(XMLSecurityDSig::template);
         $this->sigNode = $sigdoc->documentElement;
+        $this->prefix = $prefix;
     }
 
     private function resetXPathObj() {
@@ -81,9 +79,9 @@ class XMLSecurityDSig
     public function createNewSignNode($name, $value=NULL) {
         $doc = $this->sigNode->ownerDocument;
         if (! is_null($value)) {
-            $node = $doc->createElementNS(XMLSecurityDSig::XMLDSIGNS, $this->prefix.':'.$name, $value);
+            $node = $doc->createElementNS(XMLSecurityDSig::XMLDSIGNS, $this->prefix.$name, $value);
         } else {
-            $node = $doc->createElementNS(XMLSecurityDSig::XMLDSIGNS, $this->prefix.':'.$name);
+            $node = $doc->createElementNS(XMLSecurityDSig::XMLDSIGNS, $this->prefix.$name);
         }
         return $node;
     }
@@ -684,7 +682,7 @@ class XMLSecurityDSig
         $keyInfo = $nodeset->item(0);
         if (! $keyInfo) {
             $inserted = FALSE;
-            $keyInfo = $baseDoc->createElementNS(XMLSecurityDSig::XMLDSIGNS, 'ds:KeyInfo');
+            $keyInfo = $baseDoc->createElementNS(XMLSecurityDSig::XMLDSIGNS, 'KeyInfo');
 
             $query = "./secdsig:Object";
             $nodeset = $xpath->query($query, $parentRef);
@@ -702,7 +700,7 @@ class XMLSecurityDSig
         $certs = XMLSecurityDSig::staticGet509XCerts($cert, $isPEMFormat);
 
         // Attach X509 data node
-        $x509DataNode = $baseDoc->createElementNS(XMLSecurityDSig::XMLDSIGNS, 'ds:X509Data');
+        $x509DataNode = $baseDoc->createElementNS(XMLSecurityDSig::XMLDSIGNS, 'X509Data');
         $keyInfo->appendChild($x509DataNode);
 
         $issuerSerial = FALSE;
@@ -728,18 +726,18 @@ class XMLSecurityDSig
                             $issuerName = $certData['issuer'];
                         }
 
-                        $x509IssuerNode = $baseDoc->createElementNS(XMLSecurityDSig::XMLDSIGNS, 'ds:X509IssuerSerial');
+                        $x509IssuerNode = $baseDoc->createElementNS(XMLSecurityDSig::XMLDSIGNS, 'X509IssuerSerial');
                         $x509DataNode->appendChild($x509IssuerNode);
 
-                        $x509Node = $baseDoc->createElementNS(XMLSecurityDSig::XMLDSIGNS, 'ds:X509IssuerName', $issuerName);
+                        $x509Node = $baseDoc->createElementNS(XMLSecurityDSig::XMLDSIGNS, 'X509IssuerName', $issuerName);
                         $x509IssuerNode->appendChild($x509Node);
-                        $x509Node = $baseDoc->createElementNS(XMLSecurityDSig::XMLDSIGNS, 'ds:X509SerialNumber', $certData['serialNumber']);
+                        $x509Node = $baseDoc->createElementNS(XMLSecurityDSig::XMLDSIGNS, 'X509SerialNumber', $certData['serialNumber']);
                         $x509IssuerNode->appendChild($x509Node);
                     }
                 }
 
             }
-            $x509CertNode = $baseDoc->createElementNS(XMLSecurityDSig::XMLDSIGNS, 'ds:X509Certificate', $X509Cert);
+            $x509CertNode = $baseDoc->createElementNS(XMLSecurityDSig::XMLDSIGNS, 'X509Certificate', $X509Cert);
             $x509DataNode->appendChild($x509CertNode);
         }
     }
