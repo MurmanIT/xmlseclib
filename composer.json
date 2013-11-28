@@ -9,7 +9,7 @@
     "keywords": ["xml", "xmlsec", "security", "signing", "signature", "x.509", "certificate"],
     "homepage": "http://code.google.com/p/xmlseclibs/",
     "autoload": {
-        "files": ["xmlseclibs.php"]
+        "files": ["XMLSecurityDSig.php", "XMLSecurityKey.php", "XMLSecEnc.php"]
     },
     "suggest": {
         "ext/openssl": "OpenSSL extension",
